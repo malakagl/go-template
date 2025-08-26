@@ -48,3 +48,25 @@ func (r *ProductRepo) FindByID(ctx context.Context, id uint) (*db.Product, error
 
 	return &product, nil
 }
+
+func (r *ProductRepo) FindByIDs(ctx context.Context, ids []uint) ([]db.Product, error) {
+	spanCtx, span := otel.Tracer(ctx, "productRepo.findByIDs")
+	defer span.End()
+
+	var products []db.Product
+	if err := r.db.WithContext(spanCtx).Preload("Image").Find(&products, "id IN ?", ids).Error; err != nil {
+		log.WithCtx(spanCtx).Error().Msgf("Error fetching products with IDs %v: %v", ids, err)
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, errors.ErrProductNotFound
+		}
+
+		span.RecordError(err)
+		return nil, errors.ErrDatabaseError
+	}
+
+	if len(products) == 0 {
+		return nil, errors.ErrProductNotFound
+	}
+
+	return products, nil
+}
