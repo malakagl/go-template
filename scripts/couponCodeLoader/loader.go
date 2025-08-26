@@ -16,7 +16,8 @@ import (
 )
 
 var couponFiles = []string{
-	"couponbase3.gz",
+	"couponbase1.gz",
+	"couponbase2.gz",
 }
 
 func main() {
@@ -30,8 +31,8 @@ func dataFilePath(name string) string {
 }
 
 func LoadCouponCodes() {
-	user := "user"
-	pass := "password"
+	user := "test_user"
+	pass := "test_password"
 	host := "localhost"
 	port := "5432"
 	name := "test"
@@ -48,7 +49,7 @@ func LoadCouponCodes() {
 	defer pool.Close()
 
 	files := couponFiles
-	concurrency := 1 // number of concurrent files
+	concurrency := 2 // number of concurrent files
 	batchSize := 1000000
 
 	filePaths := make(chan string, len(files))

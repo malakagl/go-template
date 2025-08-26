@@ -1,7 +1,11 @@
 .gitignore
+.git
 .idea
 ReadMe.md
 ./api-spec
 ./postgres_data
 ./promocodes
 ./vendor
+./config
+./db
+./deployment

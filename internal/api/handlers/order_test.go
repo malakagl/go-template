@@ -4,12 +4,11 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
-	"errors"
 	"net/http"
 	"net/http/httptest"
 	"testing"
 
-	errors2 "github.com/malakagl/kart-challenge/pkg/errors"
+	"github.com/malakagl/kart-challenge/pkg/errors"
 	"github.com/malakagl/kart-challenge/pkg/models/dto/request"
 	"github.com/malakagl/kart-challenge/pkg/models/dto/response"
 	"github.com/stretchr/testify/mock"
@@ -40,7 +39,7 @@ func TestCreateOrder(t *testing.T) {
 				Items:      []request.Item{{ProductID: "1", Quantity: 2}},
 			},
 			mockRes:        &response.OrderResponse{ID: "1234", Total: 100.0},
-			expectedStatus: http.StatusOK,
+			expectedStatus: http.StatusCreated,
 		},
 		{
 			name:           "invalid JSON",
@@ -53,7 +52,7 @@ func TestCreateOrder(t *testing.T) {
 				CouponCode: "WRONGCODE",
 				Items:      []request.Item{{ProductID: "1", Quantity: 2}},
 			},
-			mockErr:        errors2.ErrInvalidCouponCode,
+			mockErr:        errors.ErrInvalidCouponCode,
 			expectedStatus: http.StatusUnprocessableEntity,
 		},
 		{
@@ -62,7 +61,7 @@ func TestCreateOrder(t *testing.T) {
 				CouponCode: "TESTCODE",
 				Items:      []request.Item{{ProductID: "1", Quantity: 0}},
 			},
-			mockErr:        errors2.ErrInvalidCouponCode,
+			mockErr:        errors.ErrInvalidCouponCode,
 			expectedStatus: http.StatusBadRequest,
 		},
 		{
@@ -86,7 +85,7 @@ func TestCreateOrder(t *testing.T) {
 				bodyBytes, _ = json.Marshal(v)
 			}
 
-			req := httptest.NewRequest(http.MethodPost, "/order", bytes.NewReader(bodyBytes))
+			req := httptest.NewRequest(http.MethodPost, "/orders", bytes.NewReader(bodyBytes))
 			w := httptest.NewRecorder()
 
 			mockService := new(MockOrderService)

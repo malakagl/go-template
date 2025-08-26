@@ -1,0 +1,37 @@
+name: Run unit tests on pull requests to main
+
+on:
+  pull_request:
+    branches:
+      - main   # Only run on PRs targeting main
+
+concurrency:
+  group: ${{ github.ref }}       # Group by branch
+  cancel-in-progress: true       # Cancel previous runs on the same branch
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Checkout repository
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # 2. Set up Go
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: "1.25"
+
+      # 3. Set up Docker
+      - name: Set up Docker
+        uses: docker/setup-buildx-action@v2
+
+      - name: Install golangci-lint
+        run: |
+          go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.64.8
+
+      # 4. Run `make test`
+      - name: Run unit tests
+        run: make test

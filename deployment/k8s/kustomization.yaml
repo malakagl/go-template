@@ -1,7 +1,11 @@
 resources:
   - namespace/namespace.yaml
+  - postgres/secret.yaml
+  - postgres/configmap.yaml
   - postgres/pvc.yaml
   - postgres/deployment.yaml
   - postgres/service.yaml
+  - kart-challenge/configmap.yaml
   - kart-challenge/deployment.yaml
   - kart-challenge/service.yaml
+  - kart-challenge/ingress.yaml

@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/malakagl/kart-challenge/pkg/models/db"
+	"github.com/malakagl/kart-challenge/pkg/otel"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )
@@ -18,7 +19,11 @@ func NewOrderRepo(db *gorm.DB) OrderRepo {
 
 // Create inserts a new order with products
 func (r *OrderRepo) Create(ctx context.Context, order *db.Order) error {
-	if err := r.db.WithContext(ctx).Clauses(clause.Returning{}).Create(&order).Error; err != nil {
+	spanCtx, span := otel.Tracer(ctx, "orderRepo.create")
+	defer span.End()
+
+	if err := r.db.WithContext(spanCtx).Clauses(clause.Returning{}).Create(&order).Error; err != nil {
+		span.RecordError(err)
 		return err
 	}
 

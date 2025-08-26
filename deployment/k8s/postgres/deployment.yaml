@@ -17,27 +17,39 @@ spec:
         - name: postgres
           image: postgres:16
           env:
-            - name: ENVIRONMENT
-              value: "k8s"
             - name: POSTGRES_USER
-              value: "user"
+              value: "postgres"
             - name: POSTGRES_PASSWORD
-              value: "password"
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: POSTGRES_PASSWORD
             - name: POSTGRES_DB
               value: "test"
           ports:
             - containerPort: 5432
           resources:
-            requests: # Minimum resources guaranteed
-              cpu: "500m"      # 0.5 vCPU
-              memory: "512Mi"  # 512MB RAM
-            limits: # Maximum resources allowed
-              cpu: "1"         # 1 vCPU
-              memory: "1Gi"    # 1GB RAM
+            requests:
+              cpu: "500m"
+              memory: "512Mi"
+            limits:
+              cpu: "1"
+              memory: "1Gi"
           volumeMounts:
             - mountPath: /var/lib/postgresql/data
               name: postgres-storage
+            - name: init-sql
+              mountPath: /docker-entrypoint-initdb.d/docker_postgres_init.sql
+              subPath: docker_postgres_init.sql
+          livenessProbe:
+            tcpSocket:
+              port: 5432
+            initialDelaySeconds: 30
+            periodSeconds: 10
       volumes:
         - name: postgres-storage
           persistentVolumeClaim:
             claimName: postgres-pvc
+        - name: init-sql
+          configMap:
+            name: postgres-init

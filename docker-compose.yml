@@ -5,14 +5,15 @@ services:
     hostname: postgres
     restart: always
     environment:
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: password
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: pw
       POSTGRES_DB: test
       ENVIRONMENT: docker
     ports:
       - "5432:5432"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - ./postgres_data:/var/lib/postgresql/data
+      - ./scripts/docker_postgres_init.sql:/docker-entrypoint-initdb.d/docker_postgres_init.sql
     networks:
       - kart-challenge-network
 
@@ -21,15 +22,41 @@ services:
       context: .
       dockerfile: ./docker/Dockerfile
     container_name: kart-challenge
+    image: kart-challenge:latest
     depends_on:
       - postgres
+      - jaeger
     ports:
       - "8080:8080"
-    entrypoint: ["./kart-challenge", "--config", "./config/config.docker.yaml"]
+    entrypoint: ["./kart-challenge", "--config", "/mnt/config/config.$ENVIRONMENT.yaml"]
     networks:
       - kart-challenge-network
     volumes:
-      - ./promocodes:/app/promocodes
+      - ./promocodes:/mnt/promocodes
+      - ./db:/mnt/db
+      - ./config:/mnt/config
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:8080/health || exit 1"]
+      interval: 1m
+      timeout: 3s
+      retries: 5
+      start_period: 30s
+
+  jaeger:
+    image: jaegertracing/all-in-one:1.41
+    container_name: jaeger
+    hostname: jaeger
+    environment:
+      COLLECTOR_OTLP_ENABLED: "true"
+      COLLECTOR_OTLP_HTTP_PORT: 4318
+    ports:
+      - 16686:16686
+      - 4317:4317
+      - 4318:4318
+      - 5778:5778
+      - 9411:9411
+    networks:
+      - kart-challenge-network
 
 networks:
     kart-challenge-network:

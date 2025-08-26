@@ -10,6 +10,11 @@ func TestLoadConfig_ValidFile(t *testing.T) {
 server:
   host: "localhost"
   port: 8080
+  maxCouponCodeCacheSize: 1000
+  reqLimitPerIP: 5
+  reqBurstPerIP: 10
+  reqRateWindow: 1m
+  gracefulTimeout: 30s
 database:
   host: "dbhost"
   port: 5432
@@ -19,6 +24,11 @@ database:
   sslMode: "disable"
   debug: false
   type: "postgres"
+  migrationsFolderPath: "db"
+  maxOpenConnections: 1  
+  maxIdleConnections: 1
+  connMaxIdleTime: 1m
+  maxConnMaxLifeTime: 1m
 logging:
   level: debug
   jsonFormat: true
@@ -45,6 +55,9 @@ couponCode:
 	}
 	if cfg.Server.Port != 8080 {
 		t.Errorf("expected server port 8080, got %d", cfg.Server.Port)
+	}
+	if cfg.Server.GracefulTimeout.String() != "30s" {
+		t.Errorf("expected server greacefulTimeout 30s, got %d", cfg.Server.Port)
 	}
 	if cfg.Database.Type != "postgres" {
 		t.Errorf("expected database type postgres, got %s", cfg.Database.Type)

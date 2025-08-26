@@ -19,7 +19,7 @@ func TestUnZipGzipFile(t *testing.T) {
 	}
 	gw.Close()
 
-	err = UnZipGzipFile(f.Name())
+	err = UnZipGzipFile(t.Context(), f.Name())
 	if err != nil {
 		t.Errorf("UnZipGzipFile(%q) failed: %v", f.Name(), err)
 	}

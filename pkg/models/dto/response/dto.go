@@ -35,9 +35,9 @@ func Error(w http.ResponseWriter, code int, errType, message string) {
 	})
 }
 
-func Success(w http.ResponseWriter, data interface{}) {
-	JSON(w, http.StatusOK, APIResponse{
-		Code:    http.StatusOK,
+func Success(w http.ResponseWriter, status int, data interface{}) {
+	JSON(w, status, APIResponse{
+		Code:    status,
 		Type:    "Success",
 		Message: "OK",
 		Data:    data,

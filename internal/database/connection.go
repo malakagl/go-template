@@ -15,6 +15,9 @@ var dbInstance *gorm.DB
 var mu sync.Mutex
 
 func Connect(ctx context.Context, cfg *config.DatabaseConfig) (*gorm.DB, error) {
+	// Ensure singleton
+	mu.Lock()
+	defer mu.Unlock()
 	if dbInstance != nil {
 		log.WithCtx(ctx).Debug().Msg("Reusing existing GORM database connection")
 		return dbInstance, nil
@@ -38,16 +41,13 @@ func Connect(ctx context.Context, cfg *config.DatabaseConfig) (*gorm.DB, error) 
 		return nil, fmt.Errorf("failed to ping database: %w", err)
 	}
 
+	sqlDB.SetMaxOpenConns(cfg.MaxOpenConnections)
+	sqlDB.SetMaxIdleConns(cfg.MaxIdleConnections)
+	sqlDB.SetConnMaxIdleTime(cfg.ConnMaxIdleTime)
+	sqlDB.SetConnMaxLifetime(cfg.MaxConnMaxLifeTime)
 	log.WithCtx(ctx).Debug().Msg("Connected to PostgreSQL via GORM")
 
-	// Ensure singleton
-	mu.Lock()
-	defer mu.Unlock()
-	if dbInstance == nil {
-		dbInstance = db
-	} else {
-		log.WithCtx(ctx).Debug().Msg("Reusing existing GORM database connection")
-	}
+	dbInstance = db
 
 	return dbInstance, nil
 }

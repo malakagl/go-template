@@ -14,9 +14,9 @@ COPY . .
 RUN CGO_ENABLED=0 GOOS=linux go build -o kart-challenge ./cmd/app/main.go
 
 # Stage 2: Create a minimal image
+FROM alpine:latest
 ARG ENVIRONMENT
 ENV ENVIRONMENT=$ENVIRONMENT
-FROM alpine:latest
 
 RUN apk --no-cache add ca-certificates
 
@@ -25,12 +25,9 @@ WORKDIR /app
 # Copy the binary from the builder stage
 COPY --from=builder /app/kart-challenge .
 
-# Copy the configuration file
-COPY config /app/config
-COPY db /app/db
-
 # Expose the port (optional)
 EXPOSE 8080
 
 # Run the binary
-ENTRYPOINT exec ./kart-challenge --config ./config/config.$ENVIRONMENT.yaml
+ENTRYPOINT ["./kart-challenge"]
+CMD ["--config", "./config/config.${ENVIRONMENT}.yaml"]

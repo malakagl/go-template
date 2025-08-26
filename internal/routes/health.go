@@ -9,6 +9,6 @@ import (
 
 func AddHealthCheckRoutes(r *chi.Mux) {
 	r.Get("/health", func(w http.ResponseWriter, r *http.Request) {
-		response.Success(w, "ok")
+		response.Success(w, http.StatusOK, "ok")
 	})
 }

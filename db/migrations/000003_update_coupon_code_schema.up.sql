@@ -1,6 +1,6 @@
 -- remove old coupon codes table and files table
 DROP TABLE IF EXISTS coupon_codes;
-DROP TABLE IF EXISTS oupon_code_files;
+DROP TABLE IF EXISTS coupon_code_files;
 
 -- Create new files table and coupon codes table with updated schema
 CREATE TABLE files

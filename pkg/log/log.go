@@ -7,15 +7,15 @@ import (
 	"time"
 
 	"github.com/malakagl/kart-challenge/internal/config"
-	"github.com/malakagl/kart-challenge/pkg/constants"
+	"github.com/malakagl/kart-challenge/pkg/log/hooks"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 )
 
-var (
-	Logger zerolog.Logger
-)
+// Logger instance
+var Logger zerolog.Logger
 
+// Init initializes global logger
 func Init(serviceName string, cfg config.LoggingConfig) {
 	zerolog.TimeFieldFormat = time.RFC3339
 
@@ -44,28 +44,14 @@ func Init(serviceName string, cfg config.LoggingConfig) {
 	log.Logger = Logger
 }
 
+// WithCtx returns a logger with traceHook attached
 func WithCtx(ctx context.Context) *zerolog.Logger {
-	traceID := ctx.Value(constants.TraceIDKey)
-	if traceID == nil {
-		return &Logger
-	}
-
-	l := Logger.With().Str("traceId", traceID.(string)).Logger()
+	l := Logger.Hook(hooks.NewTraceHook(ctx))
 	return &l
 }
 
-func Info() *zerolog.Event {
-	return Logger.Info()
-}
-
-func Debug() *zerolog.Event {
-	return Logger.Debug()
-}
-
-func Warn() *zerolog.Event {
-	return Logger.Warn()
-}
-
-func Error() *zerolog.Event {
-	return Logger.Error()
-}
+func Info() *zerolog.Event  { return Logger.Info() }
+func Debug() *zerolog.Event { return Logger.Debug() }
+func Warn() *zerolog.Event  { return Logger.Warn() }
+func Error() *zerolog.Event { return Logger.Error() }
+func Fatal() *zerolog.Event { return Logger.Fatal() }

@@ -4,10 +4,9 @@ metadata:
   name: kart-challenge
   namespace: kart-challenge
 spec:
-  type: NodePort
+  type: ClusterIP
   selector:
     app: kart-challenge
   ports:
-    - port: 8080
+    - port: 80
       targetPort: 8080
-      nodePort: 30080

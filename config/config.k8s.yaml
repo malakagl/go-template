@@ -1,23 +1,39 @@
 server:
   port: 8080
   host: "0.0.0.0"
+  maxCouponCodeCacheSize: 1000
+  reqLimitPerIP: 5
+  reqBurstPerIP: 10
+  reqRateWindow: 1m
+  gracefulTimeout: 30s # 30 seconds
 
 database:
   type: "postgres"
-  user: "user"
-  password: "password"
+  user: "test_user"
+  password: "test_password"
   host: "postgres.kart-challenge.svc.cluster.local"
   port: 5432
   name: "test"
   sslMode: "disable"
   debug: true
+  migrationsFolderPath: /mnt/db
+  maxOpenConnections: 1
+  maxIdleConnections: 1
+  connMaxIdleTime: 1m
+  maxConnMaxLifeTime: 1m
 
 logging:
   level: debug
   jsonFormat: false
 
+telemetry:
+  enabled: true
+  serviceName: kart-challenge
+  host: jaeger
+  port: 4318
+
 couponCode:
-  unzipped: true
+  unzipped: false
   filePaths:
     - /mnt/promocodes/couponbase1.gz
     - /mnt/promocodes/couponbase2.gz

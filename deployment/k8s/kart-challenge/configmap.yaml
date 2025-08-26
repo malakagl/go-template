@@ -1,0 +1,36 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kart-config
+  namespace: kart-challenge
+data:
+  config.k8s.yaml: |
+    server:
+      port: 8080
+      host: "0.0.0.0"
+      maxCouponCodeCacheSize: 1000
+      reqLimitPerIP: 5
+      reqBurstPerIP: 10
+      gracefulTimeout: 30s # 30 seconds
+    
+    database:
+      type: "postgres"
+      user: "test_user"
+      password: "test_password"
+      host: "postgres.kart-challenge.svc.cluster.local"
+      port: 5432
+      name: "test"
+      sslMode: "disable"
+      debug: true
+      migrationsFolderPath: /mnt/db
+    
+    logging:
+      level: debug
+      jsonFormat: false
+    
+    couponCode:
+      unzipped: false
+      filePaths:
+        - /mnt/promocodes/couponbase1.gz
+        - /mnt/promocodes/couponbase2.gz
+        - /mnt/promocodes/couponbase3.gz

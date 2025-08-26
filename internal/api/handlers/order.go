@@ -3,14 +3,16 @@ package handlers
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"net/http"
+	"strings"
 
 	"github.com/go-playground/validator/v10"
-	errors2 "github.com/malakagl/kart-challenge/pkg/errors"
 	"github.com/malakagl/kart-challenge/pkg/log"
 	"github.com/malakagl/kart-challenge/pkg/models/dto/request"
 	"github.com/malakagl/kart-challenge/pkg/models/dto/response"
 	"github.com/malakagl/kart-challenge/pkg/services"
+	"github.com/malakagl/kart-challenge/pkg/util"
 )
 
 type OrderHandler struct {
@@ -28,6 +30,7 @@ func NewOrderHandler(o services.IOrderService) *OrderHandler {
 func (o *OrderHandler) CreateOrder(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	var orderReq request.OrderRequest
+	defer r.Body.Close()
 	if err := json.NewDecoder(r.Body).Decode(&orderReq); err != nil {
 		log.WithCtx(ctx).Error().Msgf("Error decoding request body: %v", err)
 		response.Error(w, http.StatusBadRequest, "Invalid request body", err.Error())
@@ -35,7 +38,16 @@ func (o *OrderHandler) CreateOrder(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := o.validator.Struct(orderReq); err != nil {
-		log.WithCtx(ctx).Error().Msgf("Validation error: %v", err)
+		var ve validator.ValidationErrors
+		if errors.As(err, &ve) {
+			errs := make([]string, len(ve))
+			for i, fe := range ve {
+				errs[i] = fmt.Sprintf("%s failed on %s", fe.Field(), fe.Tag())
+			}
+			response.Error(w, http.StatusBadRequest, "Invalid request data", strings.Join(errs, ", "))
+			return
+		}
+
 		response.Error(w, http.StatusBadRequest, "Invalid request data", err.Error())
 		return
 	}
@@ -43,13 +55,10 @@ func (o *OrderHandler) CreateOrder(w http.ResponseWriter, r *http.Request) {
 	orderRes, err := o.orderService.Create(ctx, &orderReq)
 	if err != nil {
 		log.WithCtx(ctx).Error().Msgf("Error creating order: %v", err)
-		if errors.Is(err, errors2.ErrInvalidCouponCode) {
-			response.Error(w, http.StatusUnprocessableEntity, "Invalid coupon code", err.Error())
-		} else {
-			response.Error(w, http.StatusInternalServerError, "Failed to create order", err.Error())
-		}
+		code, msg := util.MapErrorToHTTP(err)
+		response.Error(w, code, msg, err.Error())
 		return
 	}
 
-	response.Success(w, orderRes)
+	response.Success(w, http.StatusCreated, orderRes)
 }

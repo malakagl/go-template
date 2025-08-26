@@ -2,14 +2,13 @@ package handlers
 
 import (
 	"context"
-	"errors"
 	"net/http"
 	"net/http/httptest"
 	"strconv"
 	"testing"
 
 	"github.com/go-chi/chi/v5"
-	errors2 "github.com/malakagl/kart-challenge/pkg/errors"
+	"github.com/malakagl/kart-challenge/pkg/errors"
 	"github.com/malakagl/kart-challenge/pkg/models/dto/response"
 	"github.com/stretchr/testify/mock"
 )
@@ -48,13 +47,13 @@ func TestListProducts(t *testing.T) {
 		},
 		{
 			name:           "products not found",
-			mockErr:        errors2.ErrProductNotFound,
-			expectedStatus: http.StatusNotFound,
+			mockRes:        &response.ProductsResponse{Products: []response.Product{}},
+			expectedStatus: http.StatusOK,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			req := httptest.NewRequest(http.MethodGet, "/product", nil)
+			req := httptest.NewRequest(http.MethodGet, "/products", nil)
 			w := httptest.NewRecorder()
 
 			mockService := new(MockProductService)
@@ -98,7 +97,7 @@ func TestGetProductByID(t *testing.T) {
 		{
 			name:           "product not found",
 			id:             uint(1),
-			mockErr:        errors2.ErrProductNotFound,
+			mockErr:        errors.ErrProductNotFound,
 			expectedStatus: http.StatusNotFound,
 		},
 	}
@@ -106,7 +105,7 @@ func TestGetProductByID(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			ctx := chi.NewRouteContext()
 			ctx.URLParams.Add("productID", strconv.Itoa(int(tt.id)))
-			req := httptest.NewRequest(http.MethodGet, "/product/"+strconv.Itoa(int(tt.id)), nil)
+			req := httptest.NewRequest(http.MethodGet, "/products/"+strconv.Itoa(int(tt.id)), nil)
 			req = req.WithContext(context.WithValue(context.Background(), chi.RouteCtxKey, ctx))
 			w := httptest.NewRecorder()
 

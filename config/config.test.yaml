@@ -1,6 +1,6 @@
 server:
   port: 8080
-  host: "0.0.0.0"
+  host: ""
   maxCouponCodeCacheSize: 1000
   reqLimitPerIP: 5
   reqBurstPerIP: 10
@@ -9,8 +9,8 @@ server:
 
 database:
   type: "postgres"
-  user: "test_user"
-  password: "test_password"
+  user: "test_user_it"
+  password: "test_password_it"
   host: "postgres"
   port: 5432
   name: "test"
