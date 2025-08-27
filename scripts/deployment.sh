@@ -24,6 +24,7 @@ MOUNT_PID2=$!
 
 # Apply all Kubernetes resources via Kustomization
 echo "Applying Kubernetes resources..."
+cp ./config/config.k8s.yaml ./deployment/k8s/kart-challenge/config.k8s.yaml
 kubectl apply -k ./deployment/k8s/
 
 echo "Deployment complete! Access your app at http://kart.local/"

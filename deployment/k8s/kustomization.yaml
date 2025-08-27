@@ -5,7 +5,13 @@ resources:
   - postgres/pvc.yaml
   - postgres/deployment.yaml
   - postgres/service.yaml
-  - kart-challenge/configmap.yaml
   - kart-challenge/deployment.yaml
   - kart-challenge/service.yaml
   - kart-challenge/ingress.yaml
+
+configMapGenerator:
+  - name: kart-config
+    files:
+      - config.k8s.yaml=kart-challenge/config.k8s.yaml
+    options:
+      disableNameSuffixHash: true

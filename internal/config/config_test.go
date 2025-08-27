@@ -33,7 +33,6 @@ logging:
   level: debug
   jsonFormat: true
 couponCode:
-  unzipped: false
   filePaths:
     - "file1.gz"
     - "file2.gz"
@@ -67,9 +66,6 @@ couponCode:
 	}
 	if !cfg.Logging.JsonFormat {
 		t.Errorf("expected logging jsonFormat true, got false")
-	}
-	if cfg.CouponCode.Unzipped != false {
-		t.Errorf("expected unzipped false, got true")
 	}
 	if len(cfg.CouponCode.FilePaths) != 3 {
 		t.Errorf("expected 3 coupon code files, got %d", len(cfg.CouponCode.FilePaths))

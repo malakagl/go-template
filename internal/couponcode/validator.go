@@ -40,14 +40,13 @@ func worker(ctx context.Context, path, code string, count *atomic.Int32, wg *syn
 	ctx, span := otel.Tracer(ctx, "worker:"+path+":"+code)
 	defer span.End()
 
-	f, err := os.Open(path)
-	if err != nil {
-		errCh <- fmt.Errorf("couponcode: couponcode file open error: %w", err)
-		return
-	}
-	defer func() { _ = f.Close() }()
-
 	if strings.HasSuffix(strings.ToLower(filepath.Ext(path)), ".gz") {
+		f, err := os.Open(path)
+		if err != nil {
+			errCh <- fmt.Errorf("couponcode: couponcode file open error: %w", err)
+			return
+		}
+		defer func() { _ = f.Close() }()
 		reader, err := gzip.NewReader(f)
 		if err != nil {
 			errCh <- fmt.Errorf("error creating gzip reader: %v", err)
@@ -75,6 +74,12 @@ func worker(ctx context.Context, path, code string, count *atomic.Int32, wg *syn
 			}
 		}
 	} else if strings.HasSuffix(strings.ToLower(filepath.Ext(path)), ".txt") {
+		f, err := os.Open(path)
+		if err != nil {
+			errCh <- fmt.Errorf("couponcode: couponcode file open error: %w", err)
+			return
+		}
+		defer func() { _ = f.Close() }()
 		findCodeInTextFile(ctx, code, count, f, errCh, cancel)
 	}
 }
@@ -93,7 +98,7 @@ func findCodeInTextFile(ctx context.Context, code string, count *atomic.Int32, f
 
 	fileSize := stat.Size()
 	const chunkSize = int64(1024 * 1024 * 100) // 100MB
-	const overlap = 11                         // to avoid cutting off lines. coupon code is less than or equal 10 bytes
+	const overlap = 10                         // to avoid cutting off lines. coupon code is less than or equal 10 bytes
 	numChunks := int((fileSize / chunkSize) + 1)
 
 	// prepare channel of chunks

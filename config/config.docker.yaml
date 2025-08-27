@@ -33,7 +33,6 @@ telemetry:
   port: 4318
 
 couponCode:
-  unzipped: true
   filePaths:
     - /mnt/promocodes/couponbase1.txt
     - /mnt/promocodes/couponbase2.txt

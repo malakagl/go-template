@@ -51,7 +51,6 @@ type DatabaseConfig struct {
 }
 
 type CouponCodeConfig struct {
-	Unzipped  bool     `yaml:"unzipped"`
 	FilePaths []string `yaml:"filePaths"`
 }
 

@@ -109,9 +109,9 @@ ok github.com/malakagl/kart-challenge/internal/couponcode 27.598s
 ```
 
 | Benchmark    | Iterations | Time per op | Allocated Bytes | Allocations |
-| ------------ | ---------- | ----------- | --------------- | ----------- |
-| Valid code   | 1          | ~13.8s     | ~6 MB          | 289k        |
-| Invalid code | 1          | ~13.5s     | ~6.1 MB        | 291k        |
+| ------------ | ---------- |-------------|-----------------| ----------- |
+| Valid code   | 1          | ~13.8s      | ~6 MB           | 289k        |
+| Invalid code | 1          | ~13.5s      | ~6.1 MB         | 291k        |
 
 Using decompressed coupon code files.
 

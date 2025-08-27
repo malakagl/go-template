@@ -19,6 +19,7 @@ func main() {
 
 	cfg, err := config.LoadConfig(cfgPath)
 	if err != nil {
+		log.Init("kart-challenge", config.LoggingConfig{Level: "info", JsonFormat: false})
 		log.Fatal().Err(err).Msg("failed to load config")
 	}
 
