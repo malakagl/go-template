@@ -39,10 +39,10 @@ docker compose up -d postgres
 docker compose down postgres 
 
 # apply migations
-migrate -path db/migrations -database "postgres://user:password@localhost:5432/test?sslmode=disable" up
+migrate -path db/migrations -database "postgres://test_user:test_password@localhost:5432/test?sslmode=disable" up
 
 # remove migrations
-migrate -path db/migrations -database "postgres://user:password@localhost:5432/test?sslmode=disable" down
+migrate -path db/migrations -database "postgres://test_user:test_password@localhost:5432/test?sslmode=disable" down
 
 # install lint
 go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.64.8 <- fixed with latest version

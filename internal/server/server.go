@@ -70,11 +70,13 @@ func (s *Server) Start() error {
 
 	log.Info().Msgf("creating routes")
 	middleware.SetRateLimits(s.cfg.Server.ReqLimitPerIP, s.cfg.Server.ReqBurstPerIP, s.cfg.Server.ReqRateWindow)
+	middleware.InitAuth(s.db, s.cfg.Server.MaxAPIKeyCacheSize, s.cfg.Server.MaxAPIKeyCacheTTL)
 	r := chi.NewRouter()
 	r.Use(middleware.Trace, middleware.Logging, middleware.Authentication, middleware.RateLimit)
 	routes.AddHealthCheckRoutes(r)
 	routes.AddProductRoutes(r, s.db)
 	routes.AddOrderRoutes(r, s.db)
+	routes.AddAdminRoutes(r, s.db)
 
 	serverAddr := fmt.Sprintf("%s:%d", s.cfg.Server.Host, s.cfg.Server.Port)
 	s.httpServer = &http.Server{

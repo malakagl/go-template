@@ -2,6 +2,8 @@ server:
   port: 8080
   host: ""
   maxCouponCodeCacheSize: 1000
+  maxAPIKeyCacheSize: 1000
+  maxAPIKeyCacheTTL: 15m
   reqLimitPerIP: 5
   reqBurstPerIP: 10
   reqRateWindow: 1m
