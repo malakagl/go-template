@@ -18,9 +18,11 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-var configPath string
-var cfg *config2.Config
-var dbPool *pgxpool.Pool
+var (
+	configPath string
+	cfg        *config2.Config
+	dbPool     *pgxpool.Pool
+)
 
 func TestMain(m *testing.M) {
 	loadConfig()
@@ -102,30 +104,16 @@ func seedPostgresData() {
 		return
 	}
 
-	_, err = dbPool.Exec(ctx, `INSERT INTO products (name, price, category) 
-								VALUES ('Chicken Waffle', 13.25, 'Waffle')`)
-	if err != nil {
-		log.Println("seed product failed with error, ", err)
-		return
-	}
-
-	_, err = dbPool.Exec(ctx, `INSERT INTO product_images (product_id, thumbnail, mobile, tablet, desktop) 
-								VALUES (1, '1/thumbnail.jpg', '1/mobile.jpg', '1/tablet.jpg', '1/desktop.jpg')`)
-	if err != nil {
-		log.Println("seed product images failed with error, ", err)
-		return
-	}
-
-	_, err = dbPool.Exec(ctx, `INSERT INTO api_keys (client_id, api_key) 
-								VALUES ('q87w3qPEoFk','$2a$10$ju0j1dHc7zJf/nF.cz6WQ.TZHNfGTOXmXIdmBoem25uzhKYAaILYK'),
-								       ('-G6a8hn7Rac','$2a$10$D594dp02sYvf336dnl606OVZPiPeL.NKtDA4FHS5FSWxWm909NSe2')`)
-	if err != nil {
-		log.Println("seed api key for test client failed with error, ", err)
-		return
-	}
-
-	_, err = dbPool.Exec(ctx, `INSERT INTO api_key_endpoints (api_key_id, endpoint_id, is_active) 
-								VALUES (1,3,true), (1,4,true),(1,5,true)`)
+	_, err = dbPool.Exec(ctx, `
+		INSERT INTO products (name, price, category) 
+			VALUES ('Chicken Waffle', 13.25, 'Waffle');
+		INSERT INTO product_images (product_id, thumbnail, mobile, tablet, desktop) 
+			VALUES (1, '1/thumbnail.jpg', '1/mobile.jpg', '1/tablet.jpg', '1/desktop.jpg');
+		INSERT INTO api_keys (client_id, api_key) 
+			VALUES ('q87w3qPEoFk','$2a$10$ju0j1dHc7zJf/nF.cz6WQ.TZHNfGTOXmXIdmBoem25uzhKYAaILYK'),
+				   ('-G6a8hn7Rac','$2a$10$D594dp02sYvf336dnl606OVZPiPeL.NKtDA4FHS5FSWxWm909NSe2');
+		INSERT INTO api_key_endpoints (api_key_id, endpoint_id, is_active) 
+			VALUES (1,3,true), (1,4,true),(1,5,true);`)
 	if err != nil {
 		log.Println("seed api key endpoints for test client failed with error, ", err)
 		return
