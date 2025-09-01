@@ -6,8 +6,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/malakagl/kart-challenge/internal/config"
-	"github.com/malakagl/kart-challenge/pkg/log/hooks"
+	"github.com/malakagl/go-template/internal/config"
+	"github.com/malakagl/go-template/pkg/log/hooks"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 )

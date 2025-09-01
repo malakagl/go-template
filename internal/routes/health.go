@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
-	"github.com/malakagl/kart-challenge/pkg/models/dto/response"
+	"github.com/malakagl/go-template/pkg/models/dto/response"
 )
 
 func AddHealthCheckRoutes(r *chi.Mux) {

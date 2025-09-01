@@ -8,10 +8,10 @@ import (
 	"github.com/golang-migrate/migrate/v4"
 	_ "github.com/golang-migrate/migrate/v4/database/postgres"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
-	"github.com/malakagl/kart-challenge/internal/config"
-	"github.com/malakagl/kart-challenge/pkg/errors"
-	"github.com/malakagl/kart-challenge/pkg/log"
-	"github.com/malakagl/kart-challenge/pkg/otel"
+	"github.com/malakagl/go-template/internal/config"
+	"github.com/malakagl/go-template/pkg/errors"
+	"github.com/malakagl/go-template/pkg/log"
+	"github.com/malakagl/go-template/pkg/otel"
 )
 
 func RunMigrations(ctx context.Context, cfg *config.DatabaseConfig) error {

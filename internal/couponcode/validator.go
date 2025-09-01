@@ -13,10 +13,10 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/malakagl/kart-challenge/pkg/cache"
-	"github.com/malakagl/kart-challenge/pkg/errors"
-	"github.com/malakagl/kart-challenge/pkg/log"
-	"github.com/malakagl/kart-challenge/pkg/otel"
+	"github.com/malakagl/go-template/pkg/cache"
+	"github.com/malakagl/go-template/pkg/errors"
+	"github.com/malakagl/go-template/pkg/log"
+	"github.com/malakagl/go-template/pkg/otel"
 )
 
 var (

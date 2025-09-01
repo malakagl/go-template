@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/malakagl/kart-challenge/pkg/constants"
+	"github.com/malakagl/go-template/pkg/constants"
 	"github.com/rs/zerolog"
 	"go.opentelemetry.io/otel/trace"
 )

@@ -6,11 +6,11 @@ import (
 	"strings"
 	"time"
 
-	"github.com/malakagl/kart-challenge/pkg/cache"
-	"github.com/malakagl/kart-challenge/pkg/log"
-	"github.com/malakagl/kart-challenge/pkg/models/db"
-	"github.com/malakagl/kart-challenge/pkg/models/dto/response"
-	"github.com/malakagl/kart-challenge/pkg/repositories"
+	"github.com/malakagl/go-template/pkg/cache"
+	"github.com/malakagl/go-template/pkg/log"
+	"github.com/malakagl/go-template/pkg/models/db"
+	"github.com/malakagl/go-template/pkg/models/dto/response"
+	"github.com/malakagl/go-template/pkg/repositories"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )

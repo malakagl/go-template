@@ -7,9 +7,9 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/malakagl/kart-challenge/internal/config"
-	"github.com/malakagl/kart-challenge/internal/server"
-	"github.com/malakagl/kart-challenge/pkg/log"
+	"github.com/malakagl/go-template/internal/config"
+	"github.com/malakagl/go-template/internal/server"
+	"github.com/malakagl/go-template/pkg/log"
 )
 
 func main() {
@@ -19,11 +19,11 @@ func main() {
 
 	cfg, err := config.LoadConfig(cfgPath)
 	if err != nil {
-		log.Init("kart-challenge", config.LoggingConfig{Level: "info", JsonFormat: false})
+		log.Init("go-template", config.LoggingConfig{Level: "info", JsonFormat: false})
 		log.Fatal().Err(err).Msg("failed to load config")
 	}
 
-	log.Init("kart-challenge", cfg.Logging)
+	log.Init("go-template", cfg.Logging)
 	log.Info().Msgf("Host setting up on port: %d", cfg.Server.Port)
 
 	s := server.NewServer(cfg)

@@ -13,7 +13,7 @@ database:
   type: "postgres"
   user: "test_user"
   password: "test_password"
-  host: "postgres.kart-challenge.svc.cluster.local"
+  host: "postgres.go-template.svc.cluster.local"
   port: 5432
   name: "test"
   sslMode: "disable"
@@ -30,7 +30,7 @@ logging:
 
 telemetry:
   enabled: true
-  serviceName: kart-challenge
+  serviceName: go-template
   host: jaeger
   port: 4318
 

@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/malakagl/kart-challenge/pkg/log"
+	"github.com/malakagl/go-template/pkg/log"
 )
 
 type APIResponse struct {

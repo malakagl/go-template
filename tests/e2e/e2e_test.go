@@ -13,7 +13,7 @@ import (
 	"time"
 
 	"github.com/jackc/pgx/v5/pgxpool"
-	config2 "github.com/malakagl/kart-challenge/internal/config"
+	config2 "github.com/malakagl/go-template/internal/config"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

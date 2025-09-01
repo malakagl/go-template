@@ -11,8 +11,8 @@ fi
 echo "Enabling Nginx Ingress..."
 minikube addons enable ingress
 
-docker buildx build -f ./docker/Dockerfile -t kart-challenge:latest .
-minikube image load kart-challenge:latest
+docker buildx build -f ./docker/Dockerfile -t go-template:latest .
+minikube image load go-template:latest
 
 # Mount local folder ./promocodes to /mnt/promocodes in Minikube
 # Run this in the background
@@ -24,7 +24,7 @@ MOUNT_PID2=$!
 
 # Apply all Kubernetes resources via Kustomization
 echo "Applying Kubernetes resources..."
-cp ./config/config.k8s.yaml ./deployment/k8s/kart-challenge/config.k8s.yaml
+cp ./config/config.k8s.yaml ./deployment/k8s/go-template/config.k8s.yaml
 kubectl apply -k ./deployment/k8s/
 
 echo "Deployment complete! Access your app at http://kart.local/"

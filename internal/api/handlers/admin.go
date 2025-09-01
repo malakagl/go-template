@@ -4,12 +4,12 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/malakagl/kart-challenge/pkg/errors"
-	"github.com/malakagl/kart-challenge/pkg/log"
-	"github.com/malakagl/kart-challenge/pkg/models/dto/request"
-	"github.com/malakagl/kart-challenge/pkg/models/dto/response"
-	"github.com/malakagl/kart-challenge/pkg/services"
-	"github.com/malakagl/kart-challenge/pkg/util"
+	"github.com/malakagl/go-template/pkg/errors"
+	"github.com/malakagl/go-template/pkg/log"
+	"github.com/malakagl/go-template/pkg/models/dto/request"
+	"github.com/malakagl/go-template/pkg/models/dto/response"
+	"github.com/malakagl/go-template/pkg/services"
+	"github.com/malakagl/go-template/pkg/util"
 )
 
 type AdminHandler struct {

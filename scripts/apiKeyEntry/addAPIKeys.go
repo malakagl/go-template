@@ -5,10 +5,10 @@ import (
 	"flag"
 	"strings"
 
-	"github.com/malakagl/kart-challenge/internal/config"
-	"github.com/malakagl/kart-challenge/internal/database"
-	"github.com/malakagl/kart-challenge/pkg/log"
-	"github.com/malakagl/kart-challenge/pkg/repositories"
+	"github.com/malakagl/go-template/internal/config"
+	"github.com/malakagl/go-template/internal/database"
+	"github.com/malakagl/go-template/pkg/log"
+	"github.com/malakagl/go-template/pkg/repositories"
 )
 
 func main() {
@@ -17,7 +17,7 @@ func main() {
 	flag.StringVar(&cfgPath, "config", "config.yaml", "path to YAML config file")
 	flag.Parse()
 
-	log.Init("kart-challenge", config.LoggingConfig{Level: "info", JsonFormat: false})
+	log.Init("go-template", config.LoggingConfig{Level: "info", JsonFormat: false})
 	cfg, err := config.LoadConfig(cfgPath)
 	if err != nil {
 		log.Fatal().Err(err).Msg("failed to load config")

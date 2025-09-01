@@ -30,7 +30,7 @@ logging:
 
 telemetry:
   enabled: true
-  serviceName: kart-challenge
+  serviceName: go-template
   host: localhost
   port: 4318
 

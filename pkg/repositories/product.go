@@ -3,10 +3,10 @@ package repositories
 import (
 	"context"
 
-	"github.com/malakagl/kart-challenge/pkg/errors"
-	"github.com/malakagl/kart-challenge/pkg/log"
-	"github.com/malakagl/kart-challenge/pkg/models/db"
-	"github.com/malakagl/kart-challenge/pkg/otel"
+	"github.com/malakagl/go-template/pkg/errors"
+	"github.com/malakagl/go-template/pkg/log"
+	"github.com/malakagl/go-template/pkg/models/db"
+	"github.com/malakagl/go-template/pkg/otel"
 	"gorm.io/gorm"
 )
 

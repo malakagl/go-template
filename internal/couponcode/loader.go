@@ -10,8 +10,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/malakagl/kart-challenge/pkg/log"
-	"github.com/malakagl/kart-challenge/pkg/otel"
+	"github.com/malakagl/go-template/pkg/log"
+	"github.com/malakagl/go-template/pkg/otel"
 )
 
 // SetupCouponCodeFiles processes a list of gzip files, unzipping each one into a corresponding text file.

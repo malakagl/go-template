@@ -4,7 +4,7 @@ import (
 	"context"
 	"log"
 
-	"github.com/malakagl/kart-challenge/pkg/constants"
+	"github.com/malakagl/go-template/pkg/constants"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracehttp"

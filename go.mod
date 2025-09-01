@@ -1,4 +1,4 @@
-module github.com/malakagl/kart-challenge
+module github.com/malakagl/go-template
 
 go 1.25.0
 

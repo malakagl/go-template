@@ -9,7 +9,7 @@ import (
 	"runtime"
 	"strconv"
 
-	"github.com/malakagl/kart-challenge/pkg/errors"
+	"github.com/malakagl/go-template/pkg/errors"
 	"golang.org/x/crypto/bcrypt"
 )
 

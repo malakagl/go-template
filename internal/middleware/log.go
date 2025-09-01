@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/malakagl/kart-challenge/pkg/log"
+	"github.com/malakagl/go-template/pkg/log"
 )
 
 type responseWriter struct {
