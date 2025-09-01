@@ -1,12 +1,12 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: kart-challenge
-  namespace: kart-challenge
+  name: go-template
+  namespace: go-template
 spec:
   type: ClusterIP
   selector:
-    app: kart-challenge
+    app: go-template
   ports:
     - port: 80
       targetPort: 8080

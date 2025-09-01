@@ -6,8 +6,8 @@ import (
 	"os"
 	"testing"
 
-	"github.com/malakagl/kart-challenge/internal/couponcode"
-	"github.com/malakagl/kart-challenge/pkg/util"
+	"github.com/malakagl/go-template/internal/couponcode"
+	"github.com/malakagl/go-template/pkg/util"
 )
 
 // helper: create a plain text file with given lines

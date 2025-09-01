@@ -6,14 +6,14 @@ import (
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
-	"github.com/malakagl/kart-challenge/internal/config"
-	"github.com/malakagl/kart-challenge/internal/couponcode"
-	"github.com/malakagl/kart-challenge/internal/database"
-	"github.com/malakagl/kart-challenge/internal/middleware"
-	"github.com/malakagl/kart-challenge/internal/routes"
-	"github.com/malakagl/kart-challenge/pkg/errors"
-	"github.com/malakagl/kart-challenge/pkg/log"
-	"github.com/malakagl/kart-challenge/pkg/otel"
+	"github.com/malakagl/go-template/internal/config"
+	"github.com/malakagl/go-template/internal/couponcode"
+	"github.com/malakagl/go-template/internal/database"
+	"github.com/malakagl/go-template/internal/middleware"
+	"github.com/malakagl/go-template/internal/routes"
+	"github.com/malakagl/go-template/pkg/errors"
+	"github.com/malakagl/go-template/pkg/log"
+	"github.com/malakagl/go-template/pkg/otel"
 	"gorm.io/gorm"
 )
 
@@ -36,7 +36,7 @@ func NewServer(c *config.Config) *Server {
 func (s *Server) Start() error {
 	ctx := context.Background()
 	if s.cfg.Telemetry.Enabled {
-		_, err := otel.InitTracer("kart-challenge", fmt.Sprintf("%s:%d", s.cfg.Telemetry.Host, s.cfg.Telemetry.Port))
+		_, err := otel.InitTracer("go-template", fmt.Sprintf("%s:%d", s.cfg.Telemetry.Host, s.cfg.Telemetry.Port))
 		if err != nil {
 			return err
 		}
@@ -70,11 +70,13 @@ func (s *Server) Start() error {
 
 	log.Info().Msgf("creating routes")
 	middleware.SetRateLimits(s.cfg.Server.ReqLimitPerIP, s.cfg.Server.ReqBurstPerIP, s.cfg.Server.ReqRateWindow)
+	middleware.InitAuth(s.db, s.cfg.Server.MaxAPIKeyCacheSize, s.cfg.Server.MaxAPIKeyCacheTTL)
 	r := chi.NewRouter()
 	r.Use(middleware.Trace, middleware.Logging, middleware.Authentication, middleware.RateLimit)
 	routes.AddHealthCheckRoutes(r)
 	routes.AddProductRoutes(r, s.db)
 	routes.AddOrderRoutes(r, s.db)
+	routes.AddAdminRoutes(r, s.db)
 
 	serverAddr := fmt.Sprintf("%s:%d", s.cfg.Server.Host, s.cfg.Server.Port)
 	s.httpServer = &http.Server{

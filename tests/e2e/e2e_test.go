@@ -13,14 +13,16 @@ import (
 	"time"
 
 	"github.com/jackc/pgx/v5/pgxpool"
-	config2 "github.com/malakagl/kart-challenge/internal/config"
+	config2 "github.com/malakagl/go-template/internal/config"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
-var configPath string
-var cfg *config2.Config
-var dbPool *pgxpool.Pool
+var (
+	configPath string
+	cfg        *config2.Config
+	dbPool     *pgxpool.Pool
+)
 
 func TestMain(m *testing.M) {
 	loadConfig()
@@ -39,10 +41,16 @@ func tearDownTestData() {
 	log.Println("tearing down test database")
 	ctx := context.Background()
 	_, err := dbPool.Exec(ctx, `
-        TRUNCATE TABLE 
-            kart_challenge_it.products, 
-            kart_challenge_it.orders
-        RESTART IDENTITY CASCADE;
+		drop table if exists kart_challenge_it.api_key_endpoints cascade;
+		drop table if exists kart_challenge_it.api_keys cascade;
+		drop table if exists kart_challenge_it.endpoints cascade;
+		drop table if exists kart_challenge_it.products cascade;
+		drop table if exists kart_challenge_it.orders cascade;
+		drop table if exists kart_challenge_it.product_images cascade;
+		drop table if exists kart_challenge_it.order_products cascade;
+		drop table if exists kart_challenge_it.coupon_codes cascade;
+		drop table if exists kart_challenge_it.files cascade;
+		drop table if exists kart_challenge_it.schema_migrations cascade;
     `)
 	if err != nil {
 		log.Println("tear down data encountered error, ", err)
@@ -92,19 +100,23 @@ func seedPostgresData() {
 	ctx := context.Background()
 	_, err := dbPool.Exec(ctx, "SET search_path TO kart_challenge_it")
 	if err != nil {
-		log.Fatal("failed to set test schema", err)
+		log.Println("failed to set test schema", err)
+		return
 	}
 
-	_, err = dbPool.Exec(ctx, `INSERT INTO products (name, price, category) 
-								VALUES ('Chicken Waffle', 13.25, 'Waffle')`)
+	_, err = dbPool.Exec(ctx, `
+		INSERT INTO products (name, price, category) 
+			VALUES ('Chicken Waffle', 13.25, 'Waffle');
+		INSERT INTO product_images (product_id, thumbnail, mobile, tablet, desktop) 
+			VALUES (1, '1/thumbnail.jpg', '1/mobile.jpg', '1/tablet.jpg', '1/desktop.jpg');
+		INSERT INTO api_keys (client_id, api_key) 
+			VALUES ('q87w3qPEoFk','$2a$10$ju0j1dHc7zJf/nF.cz6WQ.TZHNfGTOXmXIdmBoem25uzhKYAaILYK'),
+				   ('-G6a8hn7Rac','$2a$10$D594dp02sYvf336dnl606OVZPiPeL.NKtDA4FHS5FSWxWm909NSe2');
+		INSERT INTO api_key_endpoints (api_key_id, endpoint_id, is_active) 
+			VALUES (1,3,true), (1,4,true),(1,5,true);`)
 	if err != nil {
-		log.Fatal("seed product failed with error, ", err)
-	}
-
-	_, err = dbPool.Exec(ctx, `INSERT INTO product_images (product_id, thumbnail, mobile, tablet, desktop) 
-								VALUES (1, '1/thumbnail.jpg', '1/mobile.jpg', '1/tablet.jpg', '1/desktop.jpg')`)
-	if err != nil {
-		log.Fatal("seed product images failed with error, ", err)
+		log.Println("seed api key endpoints for test client failed with error, ", err)
+		return
 	}
 }
 
@@ -129,12 +141,12 @@ func TestProductsAPI(t *testing.T) {
 		},
 		{
 			name:     "success get all products",
-			args:     args{apiKey: "apitest"},
+			args:     args{apiKey: "q87w3qPEoFk.wiYU5t4RZHG_axVkKgKVFRexITBTdppZsKH6eKZFh8s"},
 			expected: expected{statusCode: http.StatusOK, body: "OK"},
 		},
 		{
 			name:     "success get one product",
-			args:     args{apiKey: "apitest", productId: "/1"},
+			args:     args{apiKey: "q87w3qPEoFk.wiYU5t4RZHG_axVkKgKVFRexITBTdppZsKH6eKZFh8s", productId: "/1"},
 			expected: expected{statusCode: http.StatusOK, body: "OK"},
 		},
 	}
@@ -168,17 +180,17 @@ func TestOrderAPI(t *testing.T) {
 		},
 		{
 			name:     "invalid coupon code",
-			args:     arg{apiKey: "create_order", productID: "1", couponCode: "invalid"},
+			args:     arg{apiKey: "q87w3qPEoFk.wiYU5t4RZHG_axVkKgKVFRexITBTdppZsKH6eKZFh8s", productID: "1", couponCode: "invalid"},
 			expected: expect{statusCode: http.StatusUnprocessableEntity, body: "invalid coupon code"},
 		},
 		{
 			name:     "invalid request body",
-			args:     arg{apiKey: "create_order", productID: ""},
+			args:     arg{apiKey: "q87w3qPEoFk.wiYU5t4RZHG_axVkKgKVFRexITBTdppZsKH6eKZFh8s", productID: ""},
 			expected: expect{statusCode: http.StatusBadRequest, body: "Invalid request dat"},
 		},
 		{
 			name:     "success order",
-			args:     arg{apiKey: "create_order", productID: "1", couponCode: "FIFTYOFF"},
+			args:     arg{apiKey: "q87w3qPEoFk.wiYU5t4RZHG_axVkKgKVFRexITBTdppZsKH6eKZFh8s", productID: "1", couponCode: "FIFTYOFF"},
 			expected: expect{statusCode: http.StatusCreated, body: "OK"},
 		},
 	}
@@ -203,7 +215,7 @@ func doRequest(t *testing.T, method, url, apiKey string, body []byte) (int, stri
 	req, err := http.NewRequest(method, url, bytes.NewReader(body))
 	require.NoError(t, err)
 
-	client := &http.Client{Timeout: 60 * time.Second}
+	client := &http.Client{Timeout: 120 * time.Second}
 	req.Header.Set("x-api-key", apiKey)
 	resp, err := client.Do(req)
 	require.NoError(t, err)

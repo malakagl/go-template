@@ -3,7 +3,6 @@ package couponcode
 import (
 	"compress/gzip"
 	"context"
-	"fmt"
 	"io"
 	"os"
 	"path/filepath"
@@ -11,8 +10,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/malakagl/kart-challenge/pkg/log"
-	"github.com/malakagl/kart-challenge/pkg/otel"
+	"github.com/malakagl/go-template/pkg/log"
+	"github.com/malakagl/go-template/pkg/otel"
 )
 
 // SetupCouponCodeFiles processes a list of gzip files, unzipping each one into a corresponding text file.
@@ -51,7 +50,8 @@ func SetupCouponCodeFiles(ctx context.Context, filePaths []string) error {
 
 func UnZipGzipFile(ctx context.Context, input string) error {
 	if !strings.HasSuffix(input, ".gz") {
-		return fmt.Errorf("input file must end with .gz")
+		log.Warn().Msgf("file %s does not end with .gz", input)
+		return nil
 	}
 
 	output := input[:len(input)-3] + ".txt" // remove .gz extension

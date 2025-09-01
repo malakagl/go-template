@@ -7,8 +7,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/malakagl/kart-challenge/pkg/log"
-	"github.com/malakagl/kart-challenge/pkg/models/dto/response"
+	"github.com/malakagl/go-template/pkg/log"
+	"github.com/malakagl/go-template/pkg/models/dto/response"
 	"golang.org/x/time/rate"
 )
 

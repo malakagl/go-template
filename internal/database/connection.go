@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"sync"
 
-	"github.com/malakagl/kart-challenge/internal/config"
-	"github.com/malakagl/kart-challenge/pkg/log"
+	"github.com/malakagl/go-template/internal/config"
+	"github.com/malakagl/go-template/pkg/log"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )

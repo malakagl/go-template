@@ -15,29 +15,29 @@ services:
       - ./postgres_data:/var/lib/postgresql/data
       - ./scripts/docker_postgres_init.sql:/docker-entrypoint-initdb.d/docker_postgres_init.sql
     networks:
-      - kart-challenge-network
+      - go-template-network
 
-  kart-challenge:
+  go-template:
     build:
       context: .
       dockerfile: ./docker/Dockerfile
-    container_name: kart-challenge
-    image: kart-challenge:latest
+    container_name: go-template
+    image: go-template:latest
     depends_on:
       - postgres
       - jaeger
     ports:
       - "8080:8080"
-    entrypoint: ["./kart-challenge", "--config", "/mnt/config/config.$ENVIRONMENT.yaml"]
+    entrypoint: ["./go-template", "--config", "/mnt/config/config.$ENVIRONMENT.yaml"]
     networks:
-      - kart-challenge-network
+      - go-template-network
     volumes:
       - ./promocodes:/mnt/promocodes
       - ./db:/mnt/db
       - ./config:/mnt/config
     healthcheck:
       test: ["CMD-SHELL", "wget -qO- http://localhost:8080/health || exit 1"]
-      interval: 1m
+      interval: 30s
       timeout: 3s
       retries: 5
       start_period: 30s
@@ -56,10 +56,10 @@ services:
       - 5778:5778
       - 9411:9411
     networks:
-      - kart-challenge-network
+      - go-template-network
 
 networks:
-    kart-challenge-network:
+    go-template-network:
         driver: bridge
 
 volumes:

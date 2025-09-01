@@ -38,7 +38,7 @@ linters-settings:
       - name: package-comments
       - name: exported
   goimports:
-    local-prefixes: github.com/malakagl/kart-challenge
+    local-prefixes: github.com/malakagl/go-template
 
 issues:
   exclude-use-default: false

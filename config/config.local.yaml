@@ -2,6 +2,8 @@ server:
   port: 8080
   host: "127.0.0.1"
   maxCouponCodeCacheSize: 1000
+  maxAPIKeyCacheSize: 1000
+  maxAPIKeyCacheTTL: 15m
   reqLimitPerIP: 5
   reqBurstPerIP: 10
   reqRateWindow: 1m
@@ -28,12 +30,11 @@ logging:
 
 telemetry:
   enabled: true
-  serviceName: kart-challenge
+  serviceName: go-template
   host: localhost
   port: 4318
 
 couponCode:
-  unzipped: false
   filePaths:
     - ./promocodes/couponbase1.gz
     - ./promocodes/couponbase2.gz

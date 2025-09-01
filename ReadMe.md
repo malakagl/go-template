@@ -29,6 +29,11 @@ make run-it
 # install dev dependencies
 go install -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@latest
 
+# install minkube
+curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-arm64
+sudo install minikube-linux-arm64 /usr/local/bin/minikube
+brew install minikube
+
 # to create new migration file
 migrate create -ext sql -dir db/migrations -seq init_db
 
@@ -39,10 +44,10 @@ docker compose up -d postgres
 docker compose down postgres 
 
 # apply migations
-migrate -path db/migrations -database "postgres://user:password@localhost:5432/test?sslmode=disable" up
+migrate -path db/migrations -database "postgres://test_user:test_password@localhost:5432/test?sslmode=disable" up
 
 # remove migrations
-migrate -path db/migrations -database "postgres://user:password@localhost:5432/test?sslmode=disable" down
+migrate -path db/migrations -database "postgres://test_user:test_password@localhost:5432/test?sslmode=disable" down
 
 # install lint
 go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.64.8 <- fixed with latest version
@@ -56,8 +61,8 @@ minikube start --memory 10240 --cpus 4
 minikube addons enable ingress
 minikube mount ./promocodes:/mnt/promocodes
 minikube mount ./db:/mnt/db
-docker build -f ./docker/Dockerfile -t kart-challenge:latest .
-minikube image load kart-challenge:latest
+docker build -f ./docker/Dockerfile -t go-template:latest .
+minikube image load go-template:latest
 kubectl apply -k ./deployment/k8s/
 minikube tunnel
 
@@ -66,21 +71,21 @@ kubectl apply -k ./deployment/k8s/
 
 # verify
 kubectl get deployments -A
-minikube service kart-challenge --url -n kart-challenge
-minikube service kart-challenge --url -n postgres
-kubectl get pods -n kart-challenge
-kubectl logs kart-challenge-5d8ccdfcdd-qh8cb -n kart-challenge -f
-kubectl exec -it -n kart-challenge kart-challenge-6d69f6b49-hn5fb -- /bin/sh
+minikube service go-template --url -n go-template
+minikube service go-template --url -n postgres
+kubectl get pods -n go-template
+kubectl logs go-template-5d8ccdfcdd-qh8cb -n go-template -f
+kubectl exec -it -n go-template go-template-6d69f6b49-hn5fb -- /bin/sh
 
 # update
-kubectl rollout restart deployment/kart-challenge -n kart-challenge
+kubectl rollout restart deployment/go-template -n go-template
 
 # clean up
-kubectl delete service kart-challenge -n kart-challenge
-kubectl delete service postgres -n kart-challenge
-kubectl delete deployment kart-challenge -n kart-challenge
-kubectl delete deployment postgres -n kart-challenge
-kubectl delete -n kart-challenge persistentvolumeclaim postgres-pvc
+kubectl delete service go-template -n go-template
+kubectl delete service postgres -n go-template
+kubectl delete deployment go-template -n go-template
+kubectl delete deployment postgres -n go-template
+kubectl delete -n go-template persistentvolumeclaim postgres-pvc
 minikube stop
 minikube delete --all
 ```
@@ -100,18 +105,18 @@ Using compressed coupon code files.
 % go test -bench=. -benchmem ./internal/couponcode/...
 goos: darwin
 goarch: amd64
-pkg: github.com/malakagl/kart-challenge/internal/couponcode
+pkg: github.com/malakagl/go-template/internal/couponcode
 cpu: Intel(R) Core(TM) i5-8500 CPU @ 3.00GHz
 BenchmarkValidateCouponCode_Valid-6 1 13770662525 ns/op 6093944 B/op 289099 allocs/op
 BenchmarkValidateCouponCode_Invalid-6 1 13473384996 ns/op 6129808 B/op 290891 allocs/op
 PASS
-ok github.com/malakagl/kart-challenge/internal/couponcode 27.598s
+ok github.com/malakagl/go-template/internal/couponcode 27.598s
 ```
 
 | Benchmark    | Iterations | Time per op | Allocated Bytes | Allocations |
-| ------------ | ---------- | ----------- | --------------- | ----------- |
-| Valid code   | 1          | ~13.8s     | ~6 MB          | 289k        |
-| Invalid code | 1          | ~13.5s     | ~6.1 MB        | 291k        |
+| ------------ | ---------- |-------------|-----------------| ----------- |
+| Valid code   | 1          | ~13.8s      | ~6 MB           | 289k        |
+| Invalid code | 1          | ~13.5s      | ~6.1 MB         | 291k        |
 
 Using decompressed coupon code files.
 
@@ -119,12 +124,12 @@ Using decompressed coupon code files.
 % go test -bench=. -benchmem ./internal/couponcode/...
 goos: darwin
 goarch: amd64
-pkg: github.com/malakagl/kart-challenge/internal/couponcode
+pkg: github.com/malakagl/go-template/internal/couponcode
 cpu: Intel(R) Core(TM) i5-8500 CPU @ 3.00GHz
 BenchmarkValidateCouponCode_Valid-6                    1        4274126382 ns/op           14904 B/op         31 allocs/op
 BenchmarkValidateCouponCode_Invalid-6                  1        4200461553 ns/op           14376 B/op         29 allocs/op
 PASS
-ok      github.com/malakagl/kart-challenge/internal/couponcode  8.849s
+ok      github.com/malakagl/go-template/internal/couponcode  8.849s
 ```
 | Benchmark    | Iterations | Time per op | Allocated Bytes | Allocations |
 | ------------ | ---------- |-------------|-----------------| ----------- |
@@ -165,7 +170,7 @@ Initial loading will take a bit of time. But coupon code validation will be much
 - [ ] Implement money package for handling money
 - [x] Implement the caching
 - [x] Implement the rate limiting
-- [ ] Implement the security
+- [x] Implement the security n api keys
 - [ ] Implement the monitoring
 - [x] Implement the tracing
 - [x] Create private schema for postgres

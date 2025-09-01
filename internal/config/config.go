@@ -28,6 +28,8 @@ type ServerConfig struct {
 	Host                   string        `yaml:"host"`
 	Port                   int           `yaml:"port" validate:"required"`
 	MaxCouponCodeCacheSize int           `yaml:"maxCouponCodeCacheSize"`
+	MaxAPIKeyCacheSize     int           `yaml:"maxAPIKeyCacheSize"`
+	MaxAPIKeyCacheTTL      time.Duration `yaml:"maxAPIKeyCacheTTL"`
 	ReqLimitPerIP          int           `yaml:"reqLimitPerIP" validate:"min=1"`
 	ReqBurstPerIP          int           `yaml:"reqBurstPerIP" validate:"min=1"`
 	ReqRateWindow          time.Duration `yaml:"reqRateWindow" validate:"min=1m"`
@@ -51,7 +53,6 @@ type DatabaseConfig struct {
 }
 
 type CouponCodeConfig struct {
-	Unzipped  bool     `yaml:"unzipped"`
 	FilePaths []string `yaml:"filePaths"`
 }
 

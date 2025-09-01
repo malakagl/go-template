@@ -2,6 +2,8 @@ server:
   port: 8080
   host: "0.0.0.0"
   maxCouponCodeCacheSize: 1000
+  maxAPIKeyCacheSize: 1000
+  maxAPIKeyCacheTTL: 15m
   reqLimitPerIP: 5
   reqBurstPerIP: 10
   reqRateWindow: 1m
@@ -28,13 +30,12 @@ logging:
 
 telemetry:
   enabled: true
-  serviceName: kart-challenge
+  serviceName: go-template
   host: jaeger
   port: 4318
 
 couponCode:
-  unzipped: false
   filePaths:
-    - /mnt/promocodes/couponbase1.gz
-    - /mnt/promocodes/couponbase2.gz
-    - /mnt/promocodes/couponbase3.gz
+    - /mnt/promocodes/couponbase1.txt
+    - /mnt/promocodes/couponbase2.txt
+    - /mnt/promocodes/couponbase3.txt

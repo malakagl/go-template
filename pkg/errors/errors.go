@@ -8,6 +8,9 @@ var (
 	ErrInvalidProductID    = errors.New("invalid product ID")
 	ErrInternalServerError = errors.New("internal server error")
 	ErrDatabaseError       = errors.New("database query returned error")
+
+	ErrEndpointsNotFound = errors.New("endpoints not found")
+	ErrBadRequest        = errors.New("bad request")
 )
 
 func New(s string) error {

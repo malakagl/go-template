@@ -2,7 +2,7 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: postgres-pvc
-  namespace: kart-challenge
+  namespace: go-template
 spec:
   accessModes:
     - ReadWriteOnce

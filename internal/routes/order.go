@@ -2,9 +2,9 @@ package routes
 
 import (
 	"github.com/go-chi/chi/v5"
-	"github.com/malakagl/kart-challenge/internal/api/handlers"
-	"github.com/malakagl/kart-challenge/pkg/repositories"
-	"github.com/malakagl/kart-challenge/pkg/services"
+	"github.com/malakagl/go-template/internal/api/handlers"
+	"github.com/malakagl/go-template/pkg/repositories"
+	"github.com/malakagl/go-template/pkg/services"
 	"gorm.io/gorm"
 )
 

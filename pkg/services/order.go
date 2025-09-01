@@ -3,14 +3,14 @@ package services
 import (
 	"context"
 
-	"github.com/malakagl/kart-challenge/internal/couponcode"
-	"github.com/malakagl/kart-challenge/pkg/errors"
-	"github.com/malakagl/kart-challenge/pkg/log"
-	"github.com/malakagl/kart-challenge/pkg/models/db"
-	"github.com/malakagl/kart-challenge/pkg/models/dto/request"
-	"github.com/malakagl/kart-challenge/pkg/models/dto/response"
-	"github.com/malakagl/kart-challenge/pkg/repositories"
-	"github.com/malakagl/kart-challenge/pkg/util"
+	"github.com/malakagl/go-template/internal/couponcode"
+	"github.com/malakagl/go-template/pkg/errors"
+	"github.com/malakagl/go-template/pkg/log"
+	"github.com/malakagl/go-template/pkg/models/db"
+	"github.com/malakagl/go-template/pkg/models/dto/request"
+	"github.com/malakagl/go-template/pkg/models/dto/response"
+	"github.com/malakagl/go-template/pkg/repositories"
+	"github.com/malakagl/go-template/pkg/util"
 )
 
 type IOrderService interface {
@@ -62,6 +62,7 @@ func (o *OrderService) Create(ctx context.Context, req *request.OrderRequest) (*
 	orderProducts := make([]*db.OrderProduct, len(req.Items))
 	products := make([]response.Product, len(req.Items))
 	items := make([]response.Item, len(req.Items))
+	productIds := make([]uint, len(req.Items))
 	for i, item := range req.Items {
 		productId, err := util.StringToUint(item.ProductID)
 		if err != nil || productId == 0 {
@@ -69,14 +70,28 @@ func (o *OrderService) Create(ctx context.Context, req *request.OrderRequest) (*
 			return nil, errors.ErrInvalidProductID
 		}
 
-		product, err := o.productRepo.FindByID(ctx, productId)
-		if err != nil && err.Error() == "not found" {
-			log.WithCtx(ctx).Error().Msgf("Error fetching product: %v", err)
-			return nil, errors.ErrProductNotFound
-		}
-		if err != nil {
-			log.WithCtx(ctx).Error().Msgf("Error fetching product: %v", err)
-			return nil, errors.ErrInternalServerError
+		productIds[i] = productId
+	}
+
+	productsDB, err := o.productRepo.FindByIDs(ctx, productIds)
+	if err != nil && err.Error() == "not found" {
+		log.WithCtx(ctx).Error().Msgf("Error fetching product: %v", err)
+		return nil, errors.ErrProductNotFound
+	}
+
+	if err != nil {
+		log.WithCtx(ctx).Error().Msgf("Error fetching product: %v", err)
+		return nil, errors.ErrInternalServerError
+	}
+
+	for i, item := range req.Items {
+		var product db.Product
+		for _, productDB := range productsDB {
+			pId, _ := util.StringToUint(item.ProductID)
+			if pId == productDB.ID {
+				product = productDB
+				break
+			}
 		}
 
 		orderProducts[i] = &db.OrderProduct{ProductID: item.ProductID, Quantity: item.Quantity}

@@ -23,14 +23,14 @@ stop-dep:
 	docker compose down postgres
 
 docker-build:
-	DOCKER_BUILDKIT=1 docker buildx build -f ./docker/Dockerfile -t kart-challenge .
+	DOCKER_BUILDKIT=1 docker buildx build -f ./docker/Dockerfile -t go-template .
 
 docker-start:
 	ENVIRONMENT=docker docker compose up -d postgres
-	ENVIRONMENT=docker docker compose up -d --build kart-challenge
+	ENVIRONMENT=docker docker compose up -d --build go-template
 
 docker-stop:
-	docker compose stop kart-challenge postgres
+	docker compose stop go-template postgres
 
 lint:
 	golangci-lint run ./...
@@ -39,12 +39,12 @@ run-it:
 	docker compose down
 	ENVIRONMENT=test docker compose up -d jaeger
 	ENVIRONMENT=test docker compose up -d postgres
-	until docker exec postgres pg_isready -U user; do sleep 1; done
-	ENVIRONMENT=test docker compose up -d --build kart-challenge
-	# Wait for kart-challenge to be healthy
-	until [ "$$(docker inspect --format='{{json .State.Health.Status}}' kart-challenge)" = "\"healthy\"" ]; do \
-		echo "Waiting for kart-challenge to be healthy..."; \
-		sleep 2; \
+	until docker exec postgres pg_isready -U postgres; do sleep 1; done
+	ENVIRONMENT=test docker compose up -d --build go-template
+	# Wait for go-template to be healthy
+	until [ "$$(docker inspect --format='{{json .State.Health.Status}}' go-template)" = "\"healthy\"" ]; do \
+		echo "Waiting for go-template to be healthy..."; \
+		sleep 5; \
 	done
 	go test -v ./tests/e2e -args -config=../../config/config.test.yaml
 
@@ -59,7 +59,7 @@ help:
 	@echo "  make start-dep     - Start PostgreSQL dependency (with local volume)"
 	@echo "  make stop-dep      - Stop PostgreSQL dependency"
 	@echo "  make docker-build  - Build Docker image with BuildKit"
-	@echo "  make docker-start  - Start PostgreSQL and kart-challenge in Docker"
-	@echo "  make docker-stop   - Stop PostgreSQL and kart-challenge containers"
+	@echo "  make docker-start  - Start PostgreSQL and go-template in Docker"
+	@echo "  make docker-stop   - Stop PostgreSQL and go-template containers"
 	@echo "  make run-it        - Run end-to-end tests with test Docker setup"
 	@echo "  make help          - Show this help message"

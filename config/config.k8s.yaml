@@ -2,6 +2,8 @@ server:
   port: 8080
   host: "0.0.0.0"
   maxCouponCodeCacheSize: 1000
+  maxAPIKeyCacheSize: 1000
+  maxAPIKeyCacheTTL: 15m
   reqLimitPerIP: 5
   reqBurstPerIP: 10
   reqRateWindow: 1m
@@ -11,7 +13,7 @@ database:
   type: "postgres"
   user: "test_user"
   password: "test_password"
-  host: "postgres.kart-challenge.svc.cluster.local"
+  host: "postgres.go-template.svc.cluster.local"
   port: 5432
   name: "test"
   sslMode: "disable"
@@ -28,12 +30,11 @@ logging:
 
 telemetry:
   enabled: true
-  serviceName: kart-challenge
+  serviceName: go-template
   host: jaeger
   port: 4318
 
 couponCode:
-  unzipped: false
   filePaths:
     - /mnt/promocodes/couponbase1.gz
     - /mnt/promocodes/couponbase2.gz
