@@ -22,11 +22,11 @@ import (
 var (
 	couponCodeFiles []string
 	rwMutex         sync.RWMutex
-	couponCodeCache *cache.LRUCache
+	couponCodeCache *cache.LRUCache[bool]
 )
 
 func InitCache(maxSize int) {
-	couponCodeCache = cache.NewLRUCache(maxSize)
+	couponCodeCache = cache.NewLRUCache[bool](maxSize, time.Hour)
 }
 
 func SetCouponCodeFiles(f []string) {
@@ -198,7 +198,7 @@ func ValidateCouponCode(ctx context.Context, code string) (bool, error) {
 	wg.Wait()
 	close(errChan)
 	if count.Load() >= 2 {
-		couponCodeCache.Set(code, true)
+		couponCodeCache.Put(code, true)
 		isValid = true
 		return isValid, nil
 	}
@@ -213,6 +213,6 @@ func ValidateCouponCode(ctx context.Context, code string) (bool, error) {
 		return false, err
 	}
 
-	couponCodeCache.Set(code, false)
+	couponCodeCache.Put(code, false)
 	return false, nil
 }

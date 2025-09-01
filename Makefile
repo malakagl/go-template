@@ -39,12 +39,12 @@ run-it:
 	docker compose down
 	ENVIRONMENT=test docker compose up -d jaeger
 	ENVIRONMENT=test docker compose up -d postgres
-	until docker exec postgres pg_isready -U user; do sleep 1; done
+	until docker exec postgres pg_isready -U postgres; do sleep 1; done
 	ENVIRONMENT=test docker compose up -d --build kart-challenge
 	# Wait for kart-challenge to be healthy
 	until [ "$$(docker inspect --format='{{json .State.Health.Status}}' kart-challenge)" = "\"healthy\"" ]; do \
 		echo "Waiting for kart-challenge to be healthy..."; \
-		sleep 2; \
+		sleep 5; \
 	done
 	go test -v ./tests/e2e -args -config=../../config/config.test.yaml
 

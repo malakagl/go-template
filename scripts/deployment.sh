@@ -11,7 +11,7 @@ fi
 echo "Enabling Nginx Ingress..."
 minikube addons enable ingress
 
-docker build -f ./docker/Dockerfile -t kart-challenge:latest .
+docker buildx build -f ./docker/Dockerfile -t kart-challenge:latest .
 minikube image load kart-challenge:latest
 
 # Mount local folder ./promocodes to /mnt/promocodes in Minikube

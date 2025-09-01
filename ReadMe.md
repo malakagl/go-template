@@ -29,6 +29,11 @@ make run-it
 # install dev dependencies
 go install -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@latest
 
+# install minkube
+curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-arm64
+sudo install minikube-linux-arm64 /usr/local/bin/minikube
+brew install minikube
+
 # to create new migration file
 migrate create -ext sql -dir db/migrations -seq init_db
 
@@ -39,10 +44,10 @@ docker compose up -d postgres
 docker compose down postgres 
 
 # apply migations
-migrate -path db/migrations -database "postgres://user:password@localhost:5432/test?sslmode=disable" up
+migrate -path db/migrations -database "postgres://test_user:test_password@localhost:5432/test?sslmode=disable" up
 
 # remove migrations
-migrate -path db/migrations -database "postgres://user:password@localhost:5432/test?sslmode=disable" down
+migrate -path db/migrations -database "postgres://test_user:test_password@localhost:5432/test?sslmode=disable" down
 
 # install lint
 go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.64.8 <- fixed with latest version
@@ -165,7 +170,7 @@ Initial loading will take a bit of time. But coupon code validation will be much
 - [ ] Implement money package for handling money
 - [x] Implement the caching
 - [x] Implement the rate limiting
-- [ ] Implement the security
+- [x] Implement the security n api keys
 - [ ] Implement the monitoring
 - [x] Implement the tracing
 - [x] Create private schema for postgres

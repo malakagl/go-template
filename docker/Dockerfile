@@ -12,9 +12,10 @@ COPY . .
 
 # Build the binary
 RUN CGO_ENABLED=0 GOOS=linux go build -o kart-challenge ./cmd/app/main.go
+RUN CGO_ENABLED=0 GOOS=linux go build -o admin-api-key-generator ./scripts/apiKeyEntry/addAPIKeys.go
 
 # Stage 2: Create a minimal image
-FROM alpine:latest
+FROM alpine:3.19
 ARG ENVIRONMENT
 ENV ENVIRONMENT=$ENVIRONMENT
 
@@ -24,6 +25,7 @@ WORKDIR /app
 
 # Copy the binary from the builder stage
 COPY --from=builder /app/kart-challenge .
+COPY --from=builder /app/admin-api-key-generator .
 
 # Expose the port (optional)
 EXPOSE 8080
