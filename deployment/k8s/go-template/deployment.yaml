@@ -56,7 +56,7 @@ spec:
       volumes:
         - name: config-volume
           configMap:
-            name: kart-config
+            name: go-template-config
         - name: db-migrations-volume
           hostPath:
             path: /mnt/db

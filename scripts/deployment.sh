@@ -27,7 +27,7 @@ echo "Applying Kubernetes resources..."
 cp ./config/config.k8s.yaml ./deployment/k8s/go-template/config.k8s.yaml
 kubectl apply -k ./deployment/k8s/
 
-echo "Deployment complete! Access your app at http://kart.local/"
+echo "Deployment complete! Access your app at http://go.template.local/"
 
 # Keep mount process alive
 echo "Promocodes mount is running in background (PID: $MOUNT_PID1)"

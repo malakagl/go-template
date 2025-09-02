@@ -9,7 +9,7 @@ metadata:
     nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
 spec:
   rules:
-    - host: kart.local
+    - host: go.template.local
       http:
         paths:
           - path: /

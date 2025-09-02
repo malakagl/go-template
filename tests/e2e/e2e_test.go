@@ -41,16 +41,16 @@ func tearDownTestData() {
 	log.Println("tearing down test database")
 	ctx := context.Background()
 	_, err := dbPool.Exec(ctx, `
-		drop table if exists kart_challenge_it.api_key_endpoints cascade;
-		drop table if exists kart_challenge_it.api_keys cascade;
-		drop table if exists kart_challenge_it.endpoints cascade;
-		drop table if exists kart_challenge_it.products cascade;
-		drop table if exists kart_challenge_it.orders cascade;
-		drop table if exists kart_challenge_it.product_images cascade;
-		drop table if exists kart_challenge_it.order_products cascade;
-		drop table if exists kart_challenge_it.coupon_codes cascade;
-		drop table if exists kart_challenge_it.files cascade;
-		drop table if exists kart_challenge_it.schema_migrations cascade;
+		drop table if exists go_template_it.api_key_endpoints cascade;
+		drop table if exists go_template_it.api_keys cascade;
+		drop table if exists go_template_it.endpoints cascade;
+		drop table if exists go_template_it.products cascade;
+		drop table if exists go_template_it.orders cascade;
+		drop table if exists go_template_it.product_images cascade;
+		drop table if exists go_template_it.order_products cascade;
+		drop table if exists go_template_it.coupon_codes cascade;
+		drop table if exists go_template_it.files cascade;
+		drop table if exists go_template_it.schema_migrations cascade;
     `)
 	if err != nil {
 		log.Println("tear down data encountered error, ", err)
@@ -98,7 +98,7 @@ func waitForPostgres() bool {
 
 func seedPostgresData() {
 	ctx := context.Background()
-	_, err := dbPool.Exec(ctx, "SET search_path TO kart_challenge_it")
+	_, err := dbPool.Exec(ctx, "SET search_path TO go_template_it")
 	if err != nil {
 		log.Println("failed to set test schema", err)
 		return
