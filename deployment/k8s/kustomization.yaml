@@ -8,9 +8,13 @@ resources:
   - go-template/deployment.yaml
   - go-template/service.yaml
   - go-template/ingress.yaml
+  - jaeger/deployment.yaml
+  - jaeger/service.yaml
+  - jaeger/ingress.yaml
 
 configMapGenerator:
-  - name: kart-config
+  - name: go-template-config
+    namespace: go-template
     files:
       - config.k8s.yaml=go-template/config.k8s.yaml
     options:

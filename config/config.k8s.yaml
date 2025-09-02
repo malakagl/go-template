@@ -22,7 +22,7 @@ database:
   maxOpenConnections: 1
   maxIdleConnections: 1
   connMaxIdleTime: 1m
-  maxConnMaxLifeTime: 1m
+  connMaxLifeTime: 1m
 
 logging:
   level: debug

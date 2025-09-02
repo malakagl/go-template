@@ -51,12 +51,12 @@ spec:
             httpGet:
               path: /health
               port: 8080
-            initialDelaySeconds: 10
+            initialDelaySeconds: 30
             periodSeconds: 5
       volumes:
         - name: config-volume
           configMap:
-            name: kart-config
+            name: go-template-config
         - name: db-migrations-volume
           hostPath:
             path: /mnt/db
