@@ -8,6 +8,9 @@ resources:
   - go-template/deployment.yaml
   - go-template/service.yaml
   - go-template/ingress.yaml
+  - jaeger/deployment.yaml
+  - jaeger/service.yaml
+  - jaeger/ingress.yaml
 
 configMapGenerator:
   - name: go-template-config

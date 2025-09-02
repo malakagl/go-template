@@ -49,7 +49,7 @@ type DatabaseConfig struct {
 	MaxOpenConnections   int           `yaml:"maxOpenConnections" validate:"min=1"`
 	MaxIdleConnections   int           `yaml:"maxIdleConnections" validate:"min=1"`
 	ConnMaxIdleTime      time.Duration `yaml:"connMaxIdleTime" validate:"min=1m"`
-	MaxConnMaxLifeTime   time.Duration `yaml:"maxConnMaxLifeTime" validate:"min=1m"`
+	ConnMaxLifeTime      time.Duration `yaml:"connMaxLifeTime" validate:"min=1m"`
 }
 
 type CouponCodeConfig struct {

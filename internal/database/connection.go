@@ -44,7 +44,7 @@ func Connect(ctx context.Context, cfg *config.DatabaseConfig) (*gorm.DB, error) 
 	sqlDB.SetMaxOpenConns(cfg.MaxOpenConnections)
 	sqlDB.SetMaxIdleConns(cfg.MaxIdleConnections)
 	sqlDB.SetConnMaxIdleTime(cfg.ConnMaxIdleTime)
-	sqlDB.SetConnMaxLifetime(cfg.MaxConnMaxLifeTime)
+	sqlDB.SetConnMaxLifetime(cfg.ConnMaxLifeTime)
 	log.WithCtx(ctx).Debug().Msg("Connected to PostgreSQL via GORM")
 
 	dbInstance = db
